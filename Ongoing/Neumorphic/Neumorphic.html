@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <meta name="viewport" content="width = device-width, initial-scale = 1.0" >
+        <link rel="icon" href="Assets/favicon-32x32.png" sizes="32x32">
+        <title>Neumorphic</title>
+        <link rel="stylesheet" href="File-Assets/base-style.css">
+        <script src="File-Assets/base-script.js"></script>
+    </head>
+
+    <body>
+        <!--Plans: Here is the Expanding Flex Cards from Zed Dash: (codepen.io/z-/pen/OBPJKK), the plan is to make 5 different entry points:
+        Homepage / Signing-in / R&D log-in / Newsletter / More-->
+        <!--How to largen: change flex / -->    
+        <div class="flexbox">
+            <div onclick="changeSection(1)" class="closed-section selected-section section">
+                <div class="subsection">
+                    <a class="link" href="Neumorphic-Home.html">Home
+                        <div class="decor"></div>
+                    </a>
+                </div>
+                <a href="Neumorphic-Home.html" id="p1" class="icon"></a>
+            </div>
+            <div onclick="changeSection(2)" class="closed-section section">
+                <div class="subsection">
+                    <a class="link" href="#">Log in
+                        <div class="decor"></div>
+                    </a>
+                </div>
+                <div id="p2" class="icon"></div></div>
+            <div onclick="changeSection(3)" class="closed-section section">
+                <div class="subsection">
+                    <a class="link" href="#">Development
+                        <div class="decor"></div>
+                    </a>
+                </div>
+                <div id="p3" class="icon"></div>
+        </div>
+            <div onclick="changeSection(4)" class="closed-section section">
+                <div class="subsection">
+                    <a class="link" href="#">Newsletter
+                        <div class="decor"></div>
+                    </a>
+                </div>
+                <div id="p4" class="icon"></div>
+        </div>
+            <div onclick="changeSection(5)" class="closed-section section">
+                <div class="subsection">
+                    <a class="link" href="#">HOME?
+                        <div class="decor"></div>
+                    </a>
+                </div>
+                <div id="p5" class="icon"></div>
+        </div>
+        </div>
+
+    </body>
+</html>

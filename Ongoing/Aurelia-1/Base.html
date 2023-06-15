@@ -1,0 +1,133 @@
+<html>
+    <head>
+        <title>Aurelia</title>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" href="Styler.css">
+        <script type="text/javascript" src="settings.js"></script> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    </head>
+    <body id="body" style="overflow-x: hidden;" onload="onLoad()">
+        <div class="navbar">
+            <div class="navbar-element-complex">
+                <div class="navbar-element title-text">Aurelia</div>
+                <div class="navbar-element navbar-text">News</div>
+                <div class="navbar-element navbar-text">Assignments</div>
+            </div>
+            <div class="navbar-element-complex">
+                <div class="navbar-element navbar-text">Settings</div>
+                <div class="navbar-element navbar-text">Sign in</div>
+            </div>
+        </div>
+        
+        <div class="sect">
+            <div style="flex-direction: column;" class="sect">
+                <div class="sect hr"></div>
+                <div class="slideshow sect">
+
+                    <div onclick="toggleLightbox()" class="slide a">
+                        <img class="photo" src="https://wallpapercave.com/wp/O2N2x9E.jpg" alt="photo1">
+                    </div>
+
+                    <div onclick="toggleLightbox()" class="slide a">
+                        <img class="photo" src="https://wallpapercave.com/wp/Yqc7Cai.jpg" alt="photo2">
+                    </div>
+
+                    <div onclick="toggleLightbox()" class="slide a">
+                        <img class="photo" src="https://miro.medium.com/v2/resize:fit:6912/0*C__knszvhJ6NCa11" alt="photo3">
+                    </div>
+
+                    <div onclick="toggleLightbox()" class="slide a">
+                        <img class="photo" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F954739%2Fpexels-photo-954739.jpeg%3Fcs%3Dsrgb%26dl%3Dlandscape-nature-forest-954739.jpg%26fm%3Djpg&f=1&nofb=1&ipt=e911b98d2bcc223254eb0079f29d436ce968fe68c7b8584af3912003399b75fb&ipo=images" alt="photo4">
+                    </div>
+
+                    <div onclick="toggleLightbox()" class="slide a">
+                        <img class="photo" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.la86ltxfuWCzyGFL4tlSPAHaEK%26pid%3DApi&f=1&ipt=d05aba25e6205fff6d7b72788842f16dd3dd86eecfc7b5b342e24f78b95f3af2&ipo=images" alt="photo4">
+                    </div>
+
+                    <div onclick="toggleLightbox()" class="slide a">
+                        <img class="photo" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.Jf4cgHO24mf74Icr4n4kjgHaEK%26pid%3DApi&f=1&ipt=4d0d9c2796d1aa19d6222dd16456d045cf843ad5762f9a244b5aa7ab84f0e526&ipo=images" alt="photo4">
+                    </div>
+
+                </div>
+
+                <a onclick="addSlide(-1)" class="prev a">&#10094;</a>
+                <a onclick="addSlide(1)" class="next a">&#10095;</a>
+
+                <div class="dot-container 1">
+                    <div onclick="setSlide(1)" class="dot a"></div>
+                    <div onclick="setSlide(2)" class="dot a"></div>
+                    <div onclick="setSlide(3)" class="dot a"></div>
+                    <div onclick="setSlide(4)" class="dot a"></div>
+                    <div onclick="setSlide(5)" class="dot a"></div>
+                    <div onclick="setSlide(6)" class="dot a"></div>
+                </div>
+                <div style="flex-direction: column;" class="sect"></div>
+            </div>
+        </div>
+        <div  class="lightbox">
+            <div  class="slideshow sect">
+                <div class="slide lightboxSlide aL">
+                    <img class="photo" src="https://wallpapercave.com/wp/O2N2x9E.jpg" alt="photo1">
+                </div>
+
+                <div class="slide lightboxSlide aL">
+                    <img class="photo" src="https://wallpapercave.com/wp/Yqc7Cai.jpg" alt="photo2">
+                </div>
+
+                <div class="slide lightboxSlide aL">
+                    <img class="photo" src="https://miro.medium.com/v2/resize:fit:6912/0*C__knszvhJ6NCa11" alt="photo3">
+                </div>
+
+                <div class="slide lightboxSlide aL">
+                    <img class="photo" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F954739%2Fpexels-photo-954739.jpeg%3Fcs%3Dsrgb%26dl%3Dlandscape-nature-forest-954739.jpg%26fm%3Djpg&f=1&nofb=1&ipt=e911b98d2bcc223254eb0079f29d436ce968fe68c7b8584af3912003399b75fb&ipo=images" alt="photo4">
+                </div>
+
+                <div class="slide lightboxSlide aL">
+                    <img class="photo" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.la86ltxfuWCzyGFL4tlSPAHaEK%26pid%3DApi&f=1&ipt=d05aba25e6205fff6d7b72788842f16dd3dd86eecfc7b5b342e24f78b95f3af2&ipo=images" alt="photo4">
+                </div>
+
+                <div class="slide lightboxSlide aL">
+                    <img class="photo" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.Jf4cgHO24mf74Icr4n4kjgHaEK%26pid%3DApi&f=1&ipt=4d0d9c2796d1aa19d6222dd16456d045cf843ad5762f9a244b5aa7ab84f0e526&ipo=images" alt="photo4">
+                </div>
+
+                <a onclick="addSlide(-1, true)" class=" dark prev aL">&#10094;</a>
+                <a onclick="addSlide(1, true)" class=" dark next aL">&#10095;</a>
+            </div>
+            <div class="photobox">
+                <div id="p1" onclick="setSlide(1,true)" class="photo dot aL" ></div>
+                <div id="p2" onclick="setSlide(2,true)" class="photo dot aL" ></div>
+                <div id="p3" onclick="setSlide(3,true)" class="photo dot aL" ></div>
+                <div id="p4" onclick="setSlide(4,true)" class="photo dot aL" ></div>
+                <div id="p5" onclick="setSlide(5,true)" class="photo dot aL" ></div>
+                <div id="p6" onclick="setSlide(6,true)" class="photo dot aL" ></div>
+            </div>
+
+            <div onclick="toggleLightbox()" class="closeButton">&#10006;</div>
+
+        </div>
+        <div class="sect hr"></div><div class="sect hr"></div>
+
+        <article style="box-shadow: 0 -7px 15px rgba(0, 0, 0, 0.301), 0 7px 15px rgba(0, 0, 0, 0.301);" class="sect vertical">
+            <div  class="small-container">a</div>
+            <div  class="large-container">
+
+                <p id="text" style="margin: 0 10px 0 10px;" class="article-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nibh ipsum consequat nisl vel pretium lectus. Dui nunc mattis enim ut. Tempor commodo ullamcorper a lacus vestibulum sed. Habitant morbi tristique senectus et netus et malesuada fames. Metus aliquam eleifend mi in nulla. Neque volutpat ac tincidunt vitae semper quis lectus nulla. Scelerisque felis imperdiet proin fermentum. Duis ultricies lacus sed turpis tincidunt. Enim sed faucibus turpis in eu mi bibendum neque egestas. Interdum varius sit amet mattis.</p>            </div>
+                
+                <div style="left: -100%;" class="red-box"></div>
+                <div style="left: -75%;" class="red-box"></div>
+                <div style="left: -50%;" class="red-box"></div>
+                <div style="left: -25%;" class="red-box"></div>
+                <div class="red-box"></div>
+                <div style="left: 25%;" class="red-box"></div>
+                <div style="left: 50%;" class="red-box"></div>
+                <div style="left: 75%;" class="red-box"></div>
+                <div style="left: 100%;" class="red-box"></div>
+
+            <div  class="smallest-container">a</div>
+    
+
+        </article>
+        <div class="sect hr"></div>
+
+    </body>
+</html>
