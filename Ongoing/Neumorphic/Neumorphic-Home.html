@@ -14,7 +14,35 @@
         <div class="left">LEFT</div>
         <div id="flow" class="main">
             <div class="card-holder">
-                <div class="display-card"></div>
+                <div class="display-card">
+                    <div class="content">
+                        <div class="article">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Faucibus a pellentesque sit amet porttitor eget. Amet luctus venenatis lectus magna fringilla. A cras semper auctor neque. Adipiscing at in tellus integer feugiat scelerisque varius morbi enim. Aenean et tortor at risus viverra adipiscing at. Volutpat est velit egestas dui. Ultricies tristique nulla aliquet enim. In pellentesque massa placerat duis ultricies lacus sed. Quis enim lobortis scelerisque fermentum dui faucibus in ornare. Lacinia at quis risus sed vulputate odio ut. Condimentum id venenatis a condimentum vitae sapien pellentesque. Ridiculus mus mauris vitae ultricies leo integer malesuada nunc. Nisi scelerisque eu ultrices vitae auctor eu augue ut lectus. Sit amet luctus venenatis lectus. Semper viverra nam libero justo. Ac odio tempor orci dapibus ultrices.</div>
+                        <div class="photo-container">
+                            <img src="https://www.seekpng.com/png/full/1008-10089406_longsleeve-green-shirt-pura-vida-volleyball-design-long.png" alt="shirt" class="image">
+                            <div class="sizes-container">
+                                <div class="size">1</div>
+                                <div class="size">2</div>
+                                <div class="size">3</div>
+                                <div class="size">4</div>
+                                <div class="size">5</div>
+                            </div>
+                            <div class="color-container">
+                                <div class="color"></div>
+                                <div class="color"></div>
+                                <div class="color"></div>
+                                <div class="color"></div>
+                                <div class="color"></div>
+                                <div class="color"></div>
+                                <div class="color"></div>
+                                <div class="color"></div>
+                            </div>
+                            <div id="id1" class="decor"></div>
+                            <div id="id2" class="decor"></div>
+                            <div id="id3" class="decor"></div>
+                        </div>
+                        
+                    </div>
+                </div>
                 <div class="flow-card">
                     <div class="card">1</div>
                     <div class="card">2</div>
@@ -36,17 +64,18 @@
     </div>
 </body>
 <script type="text/javascript">
-        let scrollbar = document.getElementById("scrollbar");
-        let main = document.getElementById("flow");
-        let maxHeight = main.scrollHeight - window.innerHeight;
+    let scrollbar = document.getElementById("scrollbar");
+    let main = document.getElementById("flow");
+    let maxHeight = (main.scrollHeight - window.innerHeight);
+    //the height of scrollbar is as a percentage: main scrolly / (max scrollheight of main - screenwidth) * 100
 
-        main.onscroll = function(){
-            scrollbar.style.height = calcYPercentage();
-        }
-        function calcYPercentage() {
-            let i = (main.scrollTop / maxHeight) * 100
-            return (i + "%");
-        }
+    main.onscroll = function(){
+        scrollbar.style.height = scrollPerCent();
+    }
+    function scrollPerCent(){
+        i = (main.scrollTop / maxHeight) * 100;
+        return (i + "%");
+    }
 </script>
 
 </html>
