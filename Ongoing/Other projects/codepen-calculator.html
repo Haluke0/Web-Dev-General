@@ -6,29 +6,29 @@
     <body>
         <form class="calculator" name="calc">
             <input class="display" type="text" name="text" readonly="">
-            <span class="value col2" style="background-color: color-mix(in srgb, rgb(89, 193, 189) 70%, rgb(13, 76, 146) 30%);" onclick="document.calc.text.value = ''">C</span>
+            <span class="value col2" style="background-color: color-mix(in srgb, rgb(89, 193, 189) 70%, rgb(13, 76, 146) 30%);" onclick="update('',false,true)">C</span>
             <!--Clear expands here-->
-            <span class="value" onclick="document.calc.text.value += '/'">/</span>
-            <span class="value" onclick="document.calc.text.value += '*'">*</span>
+            <span class="value" onclick="update('/')">/</span>
+            <span class="value" onclick="update('*')">*</span>
 
-            <span class="value" onclick="document.calc.text.value += '1'">1</span>
-            <span class="value" onclick="document.calc.text.value += '2'">2</span>
-            <span class="value" onclick="document.calc.text.value += '3'">3</span>
-            <span class="value" onclick="document.calc.text.value += '-'">-</span>
+            <span class="value" onclick="update('1')">1</span>
+            <span class="value" onclick="update('2')">2</span>
+            <span class="value" onclick="update('3')">3</span>
+            <span class="value" onclick="update('-')">-</span>
             
-            <span class="value" onclick="document.calc.text.value += '4'">4</span>
-            <span class="value" onclick="document.calc.text.value += '5'">5</span>
-            <span class="value" onclick="document.calc.text.value += '6'">6</span>
-            <span class="value row2" onclick="document.calc.text.value += '+'">+</span>
+            <span class="value" onclick="update('4')">4</span>
+            <span class="value" onclick="update('5')">5</span>
+            <span class="value" onclick="update('6')">6</span>
+            <span class="value row2" onclick="update('+')">+</span>
             
-            <span class="value" onclick="document.calc.text.value += '7'">7</span>
-            <span class="value" onclick="document.calc.text.value += '8'">8</span>
-            <span class="value" onclick="document.calc.text.value += '9'">9</span>
+            <span class="value" onclick="update('7')">7</span>
+            <span class="value" onclick="update('8')">8</span>
+            <span class="value" onclick="update('9')">9</span>
             <!--Plus expands here-->
 
-            <span class="value" onclick="document.calc.text.value += '.'">.</span>
-            <span class="value" onclick="document.calc.text.value += '0'">0</span>
-            <span class="value col2" onclick="calc()">=</span>
+            <span class="value" onclick="update('.')">.</span>
+            <span class="value" onclick="update('0')">0</span>
+            <span class="value col2" onclick="update('=')" >=</span>
             <!--Equals expands here-->
         </form>
     </body>
@@ -108,14 +108,94 @@
     //1st:
     //split from / * - + and then calc accordingly
     //1.5th:
-    //calc dots as well
+    //calc dots as well -turns out, I DONT NEED TO // TURNS OUT I NEED TO PREVENT MULTIPLE DOTS
     //2nd:
     //display previous calculations stacked on top of each other
     //3rd
     //add further calculation tools
-    function calc(){
-        //TODO
+    var latestProcess = 0;
+    function calc(){ // in terms of calculation: 0 = standby || 1 = * || 2 = / || 3 = + || 4 = - || 
+        input = document.calc.text.value;
+        switch (latestProcess) {
+            case 1:
+                temp = input.split("*");
+                output = Number(temp[0]) * Number(temp[1]);
+                break;
+            case 2:
+            temp = input.split("/");
+                output = Number(temp[0]) / Number(temp[1]);
+                break;
+            case 3:
+            temp = input.split("+");
+                output = Number(temp[0]) + Number(temp[1]);
+                break;
+            case 4:
+            temp = input.split("-");
+                output = Number(temp[0]) - Number(temp[1]);
+                break;
+            default: 
+                output = input;
+                break;
+        }
+        latestProcess = 0;
+        add(output,false);
     }
-
+    function update(entry, isAdding = true, clear = false){ //isAdding means that I concat a number to the display, !isAdding means I set the display
+        switch (entry) {
+            case "*":
+            if (latestProcess == 0) {
+                    process(1,entry);
+                }else {
+                    calc();
+                    process(1,entry);
+                }
+                break;
+            case "/":
+            if (latestProcess == 0) {
+                    process(2,entry);
+                }else {
+                    calc();
+                    process(2,entry);
+                }
+                break; 
+            case "+":
+            if (latestProcess == 0) {
+                    process(3,entry);
+                }else {
+                    calc();
+                    process(3,entry);
+                }
+                break;
+            case "-":
+            if (latestProcess == 0) {
+                    process(4,entry);
+                }else {
+                    calc();
+                    process(4,entry);
+                }
+                break; 
+            case "=":
+                calc();
+                break;
+            default:
+                add(entry, isAdding, clear);
+                break;
+        }
+    }
+    function add(entry, isAdding = true,clear = false){
+        if (isAdding) {
+            document.calc.text.value += entry;
+        }
+        else{
+            document.calc.text.value = entry;
+        }
+        if (clear) {
+            latestProcess = 0;
+        }
+    }
+    function process(input, entry){
+        latestProcess = input;
+        add(entry)
+    }
 
 </script>
