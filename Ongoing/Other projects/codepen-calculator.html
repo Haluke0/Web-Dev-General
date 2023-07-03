@@ -30,6 +30,9 @@
             <span class="value" onclick="update('0')">0</span>
             <span class="value col2" onclick="update('=')" >=</span>
             <!--Equals expands here-->
+            <span id="display-top" class="prev"></span>
+            <span id="display-mid" class="prev"></span>
+            <span id="display-bottom" class="prev"></span>
         </form>
     </body>
 </html>
@@ -102,81 +105,124 @@
         background-color: var(--auxilary-color);
         color: var(--initial-color);
     }
+    .prev {
+        position: absolute;
+        --font-size: calc(1.5vh + 2px);
+        font-size: var(--font-size);
+        right: 0;
+        opacity: 0.7;
+        font-weight: 500;
+    }
+    @media screen and (max-height:500px) {
+        #display-top.prev {
+            font-size:15px;
+        }
+        #display-mid.prev {
+            font-size:15px;
+            top: 17;
+        }
+        #display-bottom.prev {
+            font-size:15px;
+            top: 33;
+        }
+    }
+    #display-top {
+        top: 1px;
+        opacity: 0.55;
+        
+    }
+    #display-mid {
+        top: calc(2px +  calc( 1 * var(--font-size)));
+        font-size: calc( 1.2 * var(--font-size));
+        opacity: 0.6;
+    }
+    #display-bottom {
+        top: calc(2px +  calc( 2.2 * var(--font-size)));
+        font-size: calc( 1.4 * var(--font-size));
+    }
 </style>
 <script>
     //plans 
     //1st:Done
     //split from / * - + and then calc accordingly
-    //1.5th: Halfway done
+    //1.5th: done
     //calc dots as well -turns out, I DONT NEED TO // TURNS OUT I NEED TO PREVENT MULTIPLE DOTS
-    //also /0 ?
+    //1.7th /0 (done) is equal to 0 DONT JUDGE ME
     //2nd:
     //display previous calculations stacked on top of each other
     //3rd
     //add further calculation tools
+    let displayBottom = document.getElementById("display-bottom");
+    let displayMid = document.getElementById("display-mid");
+    let displayTop = document.getElementById("display-top");
+    let displays = [displayBottom,displayMid,displayTop]
+
     var latestProcess = 0;
+    var dotExceed = false; //means 1 dot is already placed when true
+    var lastCalculations = []; // last 3 calculations in order: 1 is latest
+
     function calc(){ // in terms of calculation: 0 = standby || 1 = * || 2 = / || 3 = + || 4 = - || 
         input = document.calc.text.value;
         switch (latestProcess) {
             case 1:
                 temp = input.split("*");
-                output = Number(temp[0]) * Number(temp[1]);
+                output = roundByN(Number(temp[0]) * Number(temp[1]) , 2);
                 break;
             case 2:
-            temp = input.split("/");
-                output = Number(temp[0]) / Number(temp[1]);
+                temp = input.split("/");
+                if (Number(temp[1]) != 0)
+                {
+                    output = roundByN(Number(temp[0]) / Number(temp[1]) , 2);
+                }else {
+                    output = "undefined"
+
+                }
                 break;
             case 3:
             temp = input.split("+");
-                output = Number(temp[0]) + Number(temp[1]);
+                output = roundByN(Number(temp[0]) + Number(temp[1]) , 2);
                 break;
             case 4:
             temp = input.split("-");
-                output = Number(temp[0]) - Number(temp[1]);
+                output = roundByN(Number(temp[0]) - Number(temp[1]) , 2);
                 break;
             default: 
                 output = input;
                 break;
         }
+        if (latestProcess != 0){
+            dotExceed = false;
+        }
+        calculation = freshenCalc(input);
+        displayLatest((calculation + " = " + output));
         latestProcess = 0;
+        if (output == "undefined"){
+            output = 0;
+        }
         add(output,false);
     }
     function update(entry, isAdding = true, clear = false){ //isAdding means that I concat a number to the display, !isAdding means I set the display
         switch (entry) {
             case "*":
-            if (latestProcess == 0) {
-                    process(1,entry);
-                }else {
-                    calc();
-                    process(1,entry);
-                }
+                processAction(1, entry);
                 break;
             case "/":
-            if (latestProcess == 0) {
-                    process(2,entry);
-                }else {
-                    calc();
-                    process(2,entry);
-                }
+                processAction(2, entry)
                 break; 
             case "+":
-            if (latestProcess == 0) {
-                    process(3,entry);
-                }else {
-                    calc();
-                    process(3,entry);
-                }
+                processAction(3, entry)
                 break;
             case "-":
-            if (latestProcess == 0) {
-                    process(4,entry);
-                }else {
-                    calc();
-                    process(4,entry);
-                }
+                processAction(4, entry)
                 break; 
             case "=":
                 calc();
+                break;
+            case ".":
+                if (!dotExceed) {
+                    dotExceed = true;
+                    add(entry, isAdding, clear);
+                }
                 break;
             default:
                 add(entry, isAdding, clear);
@@ -198,5 +244,61 @@
         latestProcess = input;
         add(entry)
     }
+    function roundByN(input, factor) {
+        e = Math.pow(10,factor);
+        return Math.round(input * e) / e;
+    }
+    function processAction(processNumber , entry) {
+        if (latestProcess == 0) {
+                    process(processNumber,entry);
+                }else {
+                    calc();
+                    process(processNumber,entry);
+                }
+                dotExceed = false;
+    }
 
+    function displayLatest(latestCalc) {
+        updateList(latestCalc);
+        updateDisplays();
+    }
+    function updateList(input) { // unshift = add an element at the beginning ([0]), pop = remove the last element
+        if (lastCalculations.length = 3) {
+            lastCalculations.unshift(input);
+            lastCalculations.pop();
+        }else {
+            lastCalculations.unshift(input);
+        }
+    }
+    function freshenCalc(t_input) {
+        switch (latestProcess){
+        case 1:
+            t_input = t_input.split("*")
+            l_output = (t_input[0] + " * " + t_input[1]);
+            break;
+        case 2:
+            t_input = t_input.split("/")
+            l_output = (t_input[0] + " / " + t_input[1]);
+            break;
+        case 3:
+            t_input = t_input.split("+")
+            l_output = t_input[0] + " + " + t_input[1];
+            break;
+        case 4:
+            t_input = t_input.split("-")
+            l_output = (t_input[0] + " - " + t_input[1]);
+            break;
+        }
+        return String(l_output);
+
+
+    }
+    function updateDisplays() {
+        for (i = 0; i < 3; i++) {
+            if (lastCalculations[i] != undefined){
+                displays[i].innerHTML = lastCalculations[i];
+            }
+            
+        }
+    }
 </script>
