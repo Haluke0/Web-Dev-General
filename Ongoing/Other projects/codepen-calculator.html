@@ -6,7 +6,7 @@
     <body>
         <form class="calculator" name="calc">
             <input class="display" type="text" name="text" readonly="">
-            <span class="value col2" style="background-color: color-mix(in srgb, rgb(89, 193, 189) 70%, rgb(13, 76, 146) 30%);" onclick="update('',false,true)">C</span>
+            <span id="clear" class="value col2" style="background-color: color-mix(in srgb, rgb(89, 193, 189) 70%, rgb(13, 76, 146) 30%);" onclick="update('')">C</span>
             <!--Clear expands here-->
             <span class="value" onclick="update('/')">/</span>
             <span class="value" onclick="update('*')">*</span>
@@ -150,6 +150,10 @@
     //1.7th /0 (done) is equal to 0 DONT JUDGE ME
     //2nd:DONE
     //display previous calculations stacked on top of each other
+    //2.5th: DONE
+    //add AC
+    //2.7th: DONE
+    //and reset with completion (on "=" enter) // ONLY WHEN THE NEXT ONE ISNT AN OPERATOR
     //3rd
     //add further calculation tools
     let displayBottom = document.getElementById("display-bottom");
@@ -157,11 +161,17 @@
     let displayTop = document.getElementById("display-top");
     let displays = [displayBottom,displayMid,displayTop]
 
+    var comp = false;
+    var isClear = true;
     var latestProcess = 0;
     var dotExceed = false; //means 1 dot is already placed when true
     var lastCalculations = []; // last 3 calculations in order: 1 is latest
 
-    function calc(){ // in terms of calculation: 0 = standby || 1 = * || 2 = / || 3 = + || 4 = - || 
+    function calc(completion = false){ // in terms of calculation: 0 = standby || 1 = * || 2 = / || 3 = + || 4 = - || 
+        //completion = true means that this last operation will be erased on the wake of new inputs.
+        if (completion) {
+            comp = true;
+        }
         input = document.calc.text.value;
         switch (latestProcess) {
             case 1:
@@ -199,9 +209,10 @@
         if (output == "undefined"){
             output = 0;
         }
-        add(output,false);
+        setDisplay(output);
     }
-    function update(entry, isAdding = true, clear = false){ //isAdding means that I concat a number to the display, !isAdding means I set the display
+    function update(entry){ //isAdding means that I concat a number to the display, !isAdding means I set the display
+        document.getElementById("clear").innerHTML = "C";
         switch (entry) {
             case "*":
                 processAction(1, entry);
@@ -216,49 +227,70 @@
                 processAction(4, entry)
                 break; 
             case "=":
-                calc();
+                calc(true);
                 break;
             case ".":
                 if (!dotExceed) {
                     dotExceed = true;
-                    add(entry, isAdding, clear);
+                    addToDisplay(entry);
                 }
                 break;
+            case "":
+                clear();
+                break;
             default:
-                add(entry, isAdding, clear);
+                addToDisplay(entry);
                 break;
         }
     }
-    function add(entry, isAdding = true,clear = false){
-        if (isAdding) {
-            document.calc.text.value += entry;
+    function clear(){
+        if (isClear) {
+            allClear()
         }
-        else{
-            document.calc.text.value = entry;
-        }
-        if (clear) {
-            latestProcess = 0;
+        else {
+        latestProcess = 0;
+        setDisplay("");
+        isClear = true;
+        document.getElementById("clear").innerHTML = "AC";
         }
     }
-    function process(input, entry){
-        latestProcess = input;
-        add(entry)
+    function allClear() {
+        setDisplay("");
+        lastCalculations = ["","",""];
+        updateDisplays();
+        isClear = true;
+        document.getElementById("clear").innerHTML = "AC";
     }
-    function roundByN(input, factor) {
+    function addToDisplay(input) {
+        if (comp) {
+            setDisplay(input);
+            comp = false;
+            return true;
+        }
+        document.calc.text.value += input;
+        isClear = false;
+    }
+    function setDisplay(input){
+        document.calc.text.value = input;
+        isClear = false;
+    }
+    function roundByN(input, factor) { // round with N number of digits after 0
         e = Math.pow(10,factor);
         return Math.round(input * e) / e;
     }
-    function processAction(processNumber , entry) {
+    function processAction(processNumber , entry) { //
+        comp = false;
         if (latestProcess == 0) {
-                    process(processNumber,entry);
+                latestProcess = processNumber;
+                addToDisplay(entry)
                 }else {
                     calc();
-                    process(processNumber,entry);
+                    latestProcess = processNumber;
+                    addToDisplay(entry)
                 }
                 dotExceed = false;
     }
-
-    function displayLatest(latestCalc) {
+    function displayLatest(latestCalc) { //display the last 3 processes.
         updateList(latestCalc);
         updateDisplays();
     }
@@ -270,7 +302,7 @@
             lastCalculations.unshift(input);
         }
     }
-    function freshenCalc(t_input) {
+    function freshenCalc(t_input) { // put " " between operators
         switch (latestProcess){
         case 1:
             t_input = t_input.split("*")
@@ -293,7 +325,7 @@
 
 
     }
-    function updateDisplays() {
+    function updateDisplays() { //update the 3 displays (bottom to top)
         for (i = 0; i < 3; i++) {
             if (lastCalculations[i] != undefined){
                 displays[i].innerHTML = lastCalculations[i];
