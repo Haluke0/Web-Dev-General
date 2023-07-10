@@ -156,6 +156,6 @@ function updateStreak(erase = false){
         scoreBoard.innerHTML = "HI Score: " + hiScore;
     }
     if (erase){streak = 0}
-    curScore.innerHTML = "Currnt Score: " + streak;
+    curScore.innerHTML = "Current Score: " + streak;
     
 }
