@@ -1,0 +1,336 @@
+<html>
+    <head>
+        <title>Calculator</title>
+        <meta name="viewport" content="width = device-width, initial-scale = 1.0">
+    </head>
+    <body>
+        <form class="calculator" name="calc">
+            <input class="display" type="text" name="text" readonly="">
+            <span id="clear" class="value col2" style="background-color: color-mix(in srgb, rgb(89, 193, 189) 70%, rgb(13, 76, 146) 30%);" onclick="update('')">C</span>
+            <!--Clear expands here-->
+            <span class="value" onclick="update('/')">/</span>
+            <span class="value" onclick="update('*')">*</span>
+
+            <span class="value" onclick="update('1')">1</span>
+            <span class="value" onclick="update('2')">2</span>
+            <span class="value" onclick="update('3')">3</span>
+            <span class="value" onclick="update('-')">-</span>
+            
+            <span class="value" onclick="update('4')">4</span>
+            <span class="value" onclick="update('5')">5</span>
+            <span class="value" onclick="update('6')">6</span>
+            <span class="value row2" onclick="update('+')">+</span>
+            
+            <span class="value" onclick="update('7')">7</span>
+            <span class="value" onclick="update('8')">8</span>
+            <span class="value" onclick="update('9')">9</span>
+            <!--Plus expands here-->
+
+            <span class="value" onclick="update('.')">.</span>
+            <span class="value" onclick="update('0')">0</span>
+            <span class="value col2" onclick="update('=')" >=</span>
+            <!--Equals expands here-->
+            <span id="display-top" class="prev"></span>
+            <span id="display-mid" class="prev"></span>
+            <span id="display-bottom" class="prev"></span>
+        </form>
+    </body>
+</html>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-size: xx-large;
+
+        --auxilary-color: rgb(207, 245, 231);
+        --first-color: rgb(160, 228, 203);
+        --initial-color: rgb(89, 193, 189);
+        --secondary-color: rgb(13, 76, 146);
+
+        --cubic-easing: cubic-bezier(0.65,0.05,0.36,1);
+
+        color: var(--secondary-color);
+
+    }
+    body {
+        min-width: 100%;
+        min-height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--initial-color);
+    }
+    .calculator {
+        position: relative;
+        top: clamp(0px , calc(20vh - 120px) , 100px);
+        display: grid;
+        width: clamp(400px, 30%, 500px);
+        height: clamp(550px, 70vh, 900px);
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(13,1fr);
+        border: 1px var(--secondary-color) solid;
+    }
+    .calculator .display {
+        grid-column: span 4;
+        grid-row: span 3;
+        text-align: right;
+        background-color: var(--auxilary-color);
+        color: var(--initial-color);
+        border: 1px var(--secondary-color) solid ;
+        border-bottom: 2px var(--secondary-color) solid;
+        outline: none;
+        box-shadow: none;
+    }
+    .calculator  .value {
+        border: var(--secondary-color) 1px solid;
+        background-color: var(--first-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        grid-row: span 2;
+        cursor: pointer;
+        transition: color var(--cubic-easing) 20ms, background-color var(--cubic-easing) 20ms;
+    }
+    .display::selection {
+        background-color: none;
+    }
+    .value.col2 {
+        grid-column: span 2;
+    }
+    .value.row2 {
+        grid-row: span 4;
+    }
+    .value:active {
+        background-color: var(--auxilary-color);
+        color: var(--initial-color);
+    }
+    .prev {
+        position: absolute;
+        --font-size: calc(1.5vh + 2px);
+        font-size: var(--font-size);
+        right: 0;
+        opacity: 0.7;
+        font-weight: 500;
+    }
+    @media screen and (max-height:500px) {
+        #display-top.prev {
+            font-size:15px;
+        }
+        #display-mid.prev {
+            font-size:15px;
+            top: 17;
+        }
+        #display-bottom.prev {
+            font-size:15px;
+            top: 33;
+        }
+    }
+    #display-top {
+        top: 1px;
+        opacity: 0.55;
+        
+    }
+    #display-mid {
+        top: calc(2px +  calc( 1 * var(--font-size)));
+        font-size: calc( 1.2 * var(--font-size));
+        opacity: 0.6;
+    }
+    #display-bottom {
+        top: calc(2px +  calc( 2.2 * var(--font-size)));
+        font-size: calc( 1.4 * var(--font-size));
+    }
+</style>
+<script>
+    //plans 
+    //1st:Done
+    //split from / * - + and then calc accordingly
+    //1.5th: done
+    //calc dots as well -turns out, I DONT NEED TO // TURNS OUT I NEED TO PREVENT MULTIPLE DOTS
+    //1.7th /0 (done) is equal to 0 DONT JUDGE ME
+    //2nd:DONE
+    //display previous calculations stacked on top of each other
+    //2.5th: DONE
+    //add AC
+    //2.7th: DONE
+    //and reset with completion (on "=" enter) // ONLY WHEN THE NEXT ONE ISNT AN OPERATOR
+    //3rd : Temporarily cancelled
+    //add further calculation tools
+    let displayBottom = document.getElementById("display-bottom");
+    let displayMid = document.getElementById("display-mid");
+    let displayTop = document.getElementById("display-top");
+    let displays = [displayBottom,displayMid,displayTop]
+
+    var comp = false;
+    var isClear = true;
+    var latestProcess = 0;
+    var dotExceed = false; //means 1 dot is already placed when true
+    var lastCalculations = []; // last 3 calculations in order: 1 is latest
+
+    function calc(completion = false){ // in terms of calculation: 0 = standby || 1 = * || 2 = / || 3 = + || 4 = - || 
+        //completion = true means that this last operation will be erased on the wake of new inputs.
+        if (completion) {
+            comp = true;
+        }
+        input = document.calc.text.value;
+        switch (latestProcess) {
+            case 1:
+                temp = input.split("*");
+                output = roundByN(Number(temp[0]) * Number(temp[1]) , 2);
+                break;
+            case 2:
+                temp = input.split("/");
+                if (Number(temp[1]) != 0)
+                {
+                    output = roundByN(Number(temp[0]) / Number(temp[1]) , 2);
+                }else {
+                    output = "undefined"
+
+                }
+                break;
+            case 3:
+            temp = input.split("+");
+                output = roundByN(Number(temp[0]) + Number(temp[1]) , 2);
+                break;
+            case 4:
+            temp = input.split("-");
+                output = roundByN(Number(temp[0]) - Number(temp[1]) , 2);
+                break;
+            default: 
+                output = input;
+                break;
+        }
+        if (latestProcess != 0){
+            dotExceed = false;
+        }
+        calculation = freshenCalc(input);
+        displayLatest((calculation + " = " + output));
+        latestProcess = 0;
+        if (output == "undefined"){
+            output = 0;
+        }
+        setDisplay(output);
+    }
+    function update(entry){ //isAdding means that I concat a number to the display, !isAdding means I set the display
+        document.getElementById("clear").innerHTML = "C";
+        switch (entry) {
+            case "*":
+                processAction(1, entry);
+                break;
+            case "/":
+                processAction(2, entry)
+                break; 
+            case "+":
+                processAction(3, entry)
+                break;
+            case "-":
+                processAction(4, entry)
+                break; 
+            case "=":
+                calc(true);
+                break;
+            case ".":
+                if (!dotExceed) {
+                    dotExceed = true;
+                    addToDisplay(entry);
+                }
+                break;
+            case "":
+                clear();
+                break;
+            default:
+                addToDisplay(entry);
+                break;
+        }
+    }
+    function clear(){
+        if (isClear) {
+            allClear()
+        }
+        else {
+        latestProcess = 0;
+        setDisplay("");
+        isClear = true;
+        document.getElementById("clear").innerHTML = "AC";
+        }
+    }
+    function allClear() {
+        setDisplay("");
+        lastCalculations = ["","",""];
+        updateDisplays();
+        isClear = true;
+        document.getElementById("clear").innerHTML = "AC";
+    }
+    function addToDisplay(input) {
+        if (comp) {
+            setDisplay(input);
+            comp = false;
+            return true;
+        }
+        document.calc.text.value += input;
+        isClear = false;
+    }
+    function setDisplay(input){
+        document.calc.text.value = input;
+        isClear = false;
+    }
+    function roundByN(input, factor) { // round with N number of digits after 0
+        e = Math.pow(10,factor);
+        return Math.round(input * e) / e;
+    }
+    function processAction(processNumber , entry) { //
+        comp = false;
+        if (latestProcess == 0) {
+                latestProcess = processNumber;
+                addToDisplay(entry)
+                }else {
+                    calc();
+                    latestProcess = processNumber;
+                    addToDisplay(entry)
+                }
+                dotExceed = false;
+    }
+    function displayLatest(latestCalc) { //display the last 3 processes.
+        updateList(latestCalc);
+        updateDisplays();
+    }
+    function updateList(input) { // unshift = add an element at the beginning ([0]), pop = remove the last element
+        if (lastCalculations.length = 3) {
+            lastCalculations.unshift(input);
+            lastCalculations.pop();
+        }else {
+            lastCalculations.unshift(input);
+        }
+    }
+    function freshenCalc(t_input) { // put " " between operators
+        switch (latestProcess){
+        case 1:
+            t_input = t_input.split("*")
+            l_output = (t_input[0] + " * " + t_input[1]);
+            break;
+        case 2:
+            t_input = t_input.split("/")
+            l_output = (t_input[0] + " / " + t_input[1]);
+            break;
+        case 3:
+            t_input = t_input.split("+")
+            l_output = t_input[0] + " + " + t_input[1];
+            break;
+        case 4:
+            t_input = t_input.split("-")
+            l_output = (t_input[0] + " - " + t_input[1]);
+            break;
+        }
+        return String(l_output);
+
+
+    }
+    function updateDisplays() { //update the 3 displays (bottom to top)
+        for (i = 0; i < 3; i++) {
+            if (lastCalculations[i] != undefined){
+                displays[i].innerHTML = lastCalculations[i];
+            }
+            
+        }
+    }
+</script>
