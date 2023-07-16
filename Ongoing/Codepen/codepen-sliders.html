@@ -8,22 +8,12 @@
                 <input type="range" min="0" max="100" value="50">
             </div>
             <div id="slide-2" class="slider-base">
-                <input list="values" type="range" min="0" max="100" step="10" value="50">
-                <datalist id="values">
-                    <option value="0" label="10"></option>
-                    <option value="10" label="20"></option>
-                    <option value="20" label="30"></option>
-                    <option value="30" label="40"></option>
-                    <option value="40" label="50"></option>
-                    <option value="50" label="60"></option>
-                    <option value="60" label="70"></option>
-                    <option value="70" label="80"></option>
-                    <option value="80" label="90"></option>
-                    <option value="90" label="100"></option>
-                  </datalist>
+                <div class="option"></div>
+                <input onload="setColor()" id="range-2" list="values" type="range" min="0" max="100"  value="0">
+                <div class="option"></div>
             </div>
             <div id="slide-3" class="slider-base">
-                <input type="range" min="0" max="100" value="50">
+                <input type="range" min="0" max="100"  step="10" value="50">
             </div>
             <div id="slide-4" class="slider-base">
                 <input type="range" min="0" max="100" value="50">
@@ -37,6 +27,7 @@
     :root{
         --w: 5px; /*base width for all sliders*/
         --l: 30px; /*base width for all thumbs*/
+        --c: black;
     }
     body{
         margin: 0;
@@ -54,6 +45,7 @@
         cursor: pointer;
     }
     .slider-box{
+        position: relative;
         width: clamp(20em,90vw,120em);
         height: 3em;
         display: flex;
@@ -70,12 +62,11 @@
         border-radius: 0.5em;
         box-shadow: 15px 10px 40px rgba(0, 0, 0, 0.4);
     }
-
     #slide-1 {
         background-color: rgb(255, 255, 255);
     }
     #slide-2 {
-        background-color: rgb(255, 255, 0);
+        background-color: rgb(255, 255, 255);
     }
     #slide-3 {
         background-color: rgb(255, 255, 0);
@@ -83,35 +74,106 @@
     #slide-4 {
         background-color: rgb(255, 255, 0);
     }
-
+    #range-2 {
+        --c1: #5bd65b; /*100% color*/
+        --c2: #c71f13;/*0% color*/
+        --c: unset;
+        background-color: transparent;
+        border-radius: calc(var(--w) * 0.75);
+    }
     #slide-1 > input {
-        background-color: black;
+        background-color: var(--c);
         height: var(--w);
+        border-radius: calc(var(--w) / 2);
+        transition: background-color 0.3s  cubic-bezier(0.65,0.05,0.36,1);
+    }
+    #slide-1 > input:hover {
+        --c: grey;
     }
     #slide-1 > input::-moz-range-thumb{
         appearance: none;
         -moz-appearance: none;
-        width: 30px;
-        height: 30px;
+        width: var(--l);
+        height: var(--l);
         border-radius: 100%;
         border: none;
-        box-shadow: 0 0 0 var(--w) inset black;
+        box-shadow: 0 0 0 var(--w) inset var(--c);
         transition: box-shadow 0.3s  cubic-bezier(0.65,0.05,0.36,1);
     }
-    #slide-1 > input::-moz-range-thumb:hover,#slide-1 > input::-moz-range-thumb:active{
-        box-shadow: 0 0 0 var(--l) inset black;
+
+    #slide-2 > input {
+        border-radius: calc(var(w) / 1.33);
     }
-    #slide-1 > input::-moz-range-thumb::before{
+    #slide-2 > input::-moz-range-thumb{
         content: "";
         appearance: none;
         -moz-appearance: none;
-        width: 1.5em;
-        height: 1.5em;
-        border-radius: 50%;
-        background: black;
         border: none;
+        width: calc(var(--l) / 2.6);
+        height: var(--l);
+        background-color: var(--c);
+    }
+    #slide-2 > input::before::-moz-range-thumb{
+        content: "";
+        appearance: none;
+        -moz-appearance: none;
+        width: var(--l);
+        height: var(--l);
+        border-radius: 100%;
+        background-color: var(--c);
         filter: blur(10px);
     }
-   
+    input::-moz-range-thumb:hover,input::-moz-range-thumb:hover{
+        cursor: grab;
+    }
+    #slide-1 > input::-moz-range-thumb:active{
+        --c: rgb(78, 78, 78);
+        box-shadow: 0 0 0 var(--l) inset var(--c);
+    }
+    input::-moz-range-thumb:active, input:active{
+        cursor: grabbing;
+    }
+    #slide-2 > input::-moz-range-track{
+        height: calc(var(--w) * 1.5);
+        background-color: rgb(59, 59, 59);
+    }
+    #slide-2 > input::-moz-range-progress{
+        height: calc(var(--w) * 1.5);
+        background-color: var(--c);
+    }
 
 </style>
+<script>
+    const r2 = document.getElementById("range-2")
+
+    r2.addEventListener("input", setColor)
+    function setColor (){
+        hue_ref = r2.value / r2.max //between 1 and 0, 1 means full green, 0 means full red
+        c1 = "#5bd65b"
+        c2 = "#c71f13"
+        r2.style.setProperty("--c", mixColors(c1,c2,hue_ref))
+    }
+    function mixColors(color_1,color_2,perc){//perc = [0,1] so the other is 1 - perc 
+        //we get "#aaaaaa" and "#aaaaaa" here
+        //first parseInt(16) [1,6] into rgb
+        //we should have [num,num,num] and [num,num,num] here
+        //then take EACH first element and second and third and combine it
+        //we should then have [num,num,num] here
+        //then take each element and toString(16)
+        //finally concat "#" + "aaaaaa"
+        var preput =[];
+        var output = "#";
+        function reduce(c,index){
+            return parseInt(c[index * 2 - 1] + c[index * 2],16)                
+        }
+        hue1 = [reduce(color_1,1),reduce(color_1,2),reduce(color_1,3)]
+        hue2 = [reduce(color_2,1),reduce(color_2,2),reduce(color_2,3)]
+        for (i = 0; i < hue1.length;i++){
+            preput.push(Math.floor(hue1[i] * perc + hue2[i] * (1 - perc)))
+        }
+        for (i = 0;i < preput.length;i++){
+            output += preput[i].toString(16)
+        }
+        return output
+    }
+</script>
