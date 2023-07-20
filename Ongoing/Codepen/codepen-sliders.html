@@ -2,21 +2,26 @@
     <head>
         
     </head>
-    <body>
+    <body onload="onload()">
         <div class="slider-box">
             <div id="slide-1" class="slider-base">
                 <input type="range" min="0" max="100" value="50">
             </div>
-            <div id="slide-2" class="slider-base">
+            <div  id="slide-2" class="slider-base">
                 <div class="option"></div>
-                <input onload="setColor()" id="range-2" list="values" type="range" min="0" max="100"  value="0">
+                <input  id="range-2"   list="values" type="range" min="0" max="100"  value="0">
                 <div class="option"></div>
             </div>
             <div id="slide-3" class="slider-base">
-                <input type="range" min="0" max="100"  step="10" value="50">
+                <div class="track"></div>
+                <div id="ft" class="fill-track"></div>
+                <input id="range-3-1" type="range" min="0" max="100" value="50">
+                <input id="range-3-2" type="range" min="0" max="100" value="50">
+
             </div>
             <div id="slide-4" class="slider-base">
-                <input type="range" min="0" max="100" value="50">
+                <span id="disp" class="display visible">0</span>
+                <input id="range-4" type="range" min="0" max="100" value="50">
             </div>
 
 
@@ -53,6 +58,7 @@
         gap: 20px;
     }
     .slider-base{
+        position: relative;
         appearance: none;
         flex: 1;
         outline: none;
@@ -61,6 +67,39 @@
         align-items: center;
         border-radius: 0.5em;
         box-shadow: 15px 10px 40px rgba(0, 0, 0, 0.4);
+        
+    }
+    .fill-track {
+        position: absolute;
+        background-color: rgb(255, 217, 0);
+        height: 5px;
+        left: 10%;
+        right: 10%;
+        z-index: 1;
+        
+    }
+    .track {
+        width: 98%;
+        position: absolute;
+        left: 1%;
+        height: 5px;
+        background-color: rgb(255, 125, 88);
+        z-index: 0;
+    }
+    .display.visible {
+        transform-origin: center center;
+        position: absolute;
+        top: -130%;
+        left: 0;
+        color: rgb(0, 0, 0);
+        height: 25px;
+        width: 55px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        font-size: 25px;
+        border-radius: 50%;
+        border: black 2px solid;
+        text-align: center;
     }
     #slide-1 {
         background-color: rgb(255, 255, 255);
@@ -69,17 +108,14 @@
         background-color: rgb(255, 255, 255);
     }
     #slide-3 {
-        background-color: rgb(255, 255, 0);
+        background-color: rgb(255, 255, 255);
+        position: relative;
     }
     #slide-4 {
         background-color: rgb(255, 255, 0);
     }
     #range-2 {
-        --c1: #5bd65b; /*100% color*/
-        --c2: #c71f13;/*0% color*/
-        --c: unset;
-        background-color: transparent;
-        border-radius: calc(var(--w) * 0.75);
+        --c: ;  
     }
     #slide-1 > input {
         background-color: var(--c);
@@ -100,11 +136,7 @@
         box-shadow: 0 0 0 var(--w) inset var(--c);
         transition: box-shadow 0.3s  cubic-bezier(0.65,0.05,0.36,1);
     }
-
-    #slide-2 > input {
-        border-radius: calc(var(w) / 1.33);
-    }
-    #slide-2 > input::-moz-range-thumb{
+    #range-2::-moz-range-thumb{
         content: "";
         appearance: none;
         -moz-appearance: none;
@@ -113,7 +145,7 @@
         height: var(--l);
         background-color: var(--c);
     }
-    #slide-2 > input::before::-moz-range-thumb{
+    #range-2::before::-moz-range-thumb{
         content: "";
         appearance: none;
         -moz-appearance: none;
@@ -127,31 +159,105 @@
         cursor: grab;
     }
     #slide-1 > input::-moz-range-thumb:active{
-        --c: rgb(78, 78, 78);
         box-shadow: 0 0 0 var(--l) inset var(--c);
     }
     input::-moz-range-thumb:active, input:active{
         cursor: grabbing;
     }
-    #slide-2 > input::-moz-range-track{
+    #range-2::-moz-range-track{
         height: calc(var(--w) * 1.5);
         background-color: rgb(59, 59, 59);
+        border-radius: calc(var(--w) * 0.75);
     }
-    #slide-2 > input::-moz-range-progress{
+    #range-2::-moz-range-progress{
         height: calc(var(--w) * 1.5);
         background-color: var(--c);
+        border-radius: calc(var(--w) * 0.75);
+    }
+    #slide-3 > input {
+        height: 0;
+        position: absolute;
+        left: 0;
+        width: 99%;
+        border-radius: calc(var(--w) / 2);
+        z-index: 1;
+        background-color: transparent;
+        pointer-events: none;
+    }
+    #slide-3 > input::-moz-range-track {
+        pointer-events: none;
+        z-index: 100;
+        background-color: transparent;
+    }
+    #slide-3 > input::-moz-range-thumb {
+        pointer-events: all;
+        --w: 25px;
+        height: var(--w);
+        width: var(--w);
+        border-radius: 100%;
+        position: relative;
+        border: 3px solid rgb(255, 125, 88);
+    }
+    #slide-4 > input::-moz-range-thumb{
+        --w:30px;
+        height: var(--w);
+        width: var(--w);
     }
 
 </style>
 <script>
     const r2 = document.getElementById("range-2")
+    const t1 = document.getElementById("range-3-1")
+    const t2 = document.getElementById("range-3-2")
+    const ctr = document.getElementById("ft")
+    const dsp = document.getElementById("disp")
+    const r4 = document.getElementById("range-4")
 
-    r2.addEventListener("input", setColor)
+    function onload(){
+        r2.addEventListener("input", setColor)
+        t1.addEventListener("input", updateCenter)
+        t2.addEventListener("input", updateCenter)
+        r4.addEventListener("input", maintainPosition)
+        setColor()
+        updateCenter()
+        maintainPosition()
+    }
+
+
+    function maintainPosition(){
+        val = Math.floor(r4.value / r4.max * r4.clientWidth - 30)
+        dsp.style.left = val + "px"
+        dsp.innerHTML = val + "%"
+    }
+    function updateCenter(){
+        v1 = Math.floor(t1.value / t1.max * 98)
+        v2 = Math.floor(t2.value / t2.max * 98)
+        if (v1 > v2){ // 0 v2 v1 0 
+            left = v2 + 2
+            right = 100 - v1
+        }else if (v2 > v1){// 0 v1 v2 0 
+            left = v1 + 2
+            right = 100 - v2
+        }else{
+            right = 100;
+            left = 0;
+        }
+        ctr.style.right = right + "%"
+        ctr.style.left = left + "%"
+    }
+    
     function setColor (){
-        hue_ref = r2.value / r2.max //between 1 and 0, 1 means full green, 0 means full red
-        c1 = "#5bd65b"
-        c2 = "#c71f13"
-        r2.style.setProperty("--c", mixColors(c1,c2,hue_ref))
+        hue_ref = r2.value / r2.max * 1.8 + 0.1 //between 1 and 0, 1 means full green, 0 means full red
+        if (hue_ref >= 0 && hue_ref < 1){
+            c1 = "#ff0000"
+            c2 = "#eeee00"
+        }else if ((hue_ref >= 1 && hue_ref <= 2)){
+            hue_ref -= 1;
+            c1 = "#eeee00"
+            c2 = "#00ff00"
+        }
+        hue_ref = 1 - hue_ref
+        r2.style.setProperty("--c", mixColors(c1, c2, hue_ref))
     }
     function mixColors(color_1,color_2,perc){//perc = [0,1] so the other is 1 - perc 
         //we get "#aaaaaa" and "#aaaaaa" here
@@ -172,8 +278,11 @@
             preput.push(Math.floor(hue1[i] * perc + hue2[i] * (1 - perc)))
         }
         for (i = 0;i < preput.length;i++){
-            output += preput[i].toString(16)
+            output += preput[i].toString(16) == 0 ? "00": preput[i].toString(16);
         }
         return output
+    }
+    function multipleSliders(){
+        //first determine which one is
     }
 </script>
