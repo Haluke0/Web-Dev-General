@@ -1,0 +1,200 @@
+<html>
+    <head>
+        <meta name="viewport" content="width = device-width, initial-scale = 1.0">
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="box">
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/128/1890/1890663.png" alt="perfume_1">
+                    <span>Lavender Haze</span>
+                    <div class="button"></div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/128/1890/1890663.png" alt="perfume_1">
+                    <span>LA Nights</span>
+                    <div class="button"></div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/128/1890/1890663.png" alt="perfume_1">
+                    <span>Fiéra</span>
+                    <div class="button"></div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/128/1890/1890663.png" alt="perfume_1">
+                    <span>Ocean Embrace</span>
+                    <div class="button"></div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/128/1890/1890663.png" alt="perfume_1">
+                    <span>Queen of Hearts</span>
+                    <div class="button"></div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/128/1890/1890663.png" alt="perfume_1">
+                    <span>Intimacy</span>
+                    <div class="button"></div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/128/1890/1890663.png" alt="perfume_1">
+                    <span>Conqueror</span>
+                    <div class="button"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <style>
+        /*containers and grids*/
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+
+            --phi: 1.618;/*Golden ratio mah dudes*/
+            --min: 150px;/*the minimized base length of cards*/
+            --max: 510px;/*the maximized base length of cards*/
+        }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            min-height: 480px;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+        }
+        .container {
+            position: absolute;
+            top: 0%;
+            display: grid;
+            gap: 20px;
+            padding: 30px;
+            width: 100%;
+            min-height: 100%;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            background-color: rgb(55, 58, 90);
+        }
+        .container .box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(74, 81, 141);
+            min-height: calc(calc(var(--min) * var(--phi)) * 1.52);
+        }
+        .container .box:nth-child(7){
+            grid-column: span 2;
+        }
+        @media screen and (width < 460px){
+            .container{
+                padding: 0;
+            }
+        }
+        @media screen and (width < 880px){
+            .container .box:nth-child(7){
+            grid-column: unset;
+        }
+        }
+        @media screen and (1300px < width < 1720px){/*1720px for 4 cols, 1300 for 3 cols, 460px for 2 cols*/
+            .container .box:nth-child(6){
+            grid-row: span 2;
+        }
+        }
+        @media screen and (1720px < width){/*1720px for 4 cols, 1300 for 3 cols, 460px for 2 cols*/
+            .container .box:nth-child(1){
+            grid-row: span 2;
+            }
+            .container .box:nth-child(3){
+            grid-column: span 2;
+            }
+            .container .box:nth-child(7){
+            grid-column: span 3;
+            }
+            .container .box:nth-child(6){
+            grid-row: span 2;
+            }
+        }
+        /*cards & shop items*/
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
+        .card {
+            --temp-width: clamp(var(--min), 56%, var(--max));
+            position: relative;
+            height: calc(var(--temp-width) * var(--phi));
+            width: var(--temp-width);
+            background-color: blanchedalmond;
+            border-radius: 7px;
+            box-shadow: 5px 5px 10px 6px rgba(0, 0, 0, 0.2);
+            transition: 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card:hover {
+            transform: scale(1.02) translateY(-2px);
+        }
+        .card img {
+            position: absolute;
+            top: 6%;
+            aspect-ratio: 1.0;
+            width: 40%;
+            filter: drop-shadow(5px 5px 6px rgba(0, 0, 0, 0.432));
+            max-width: 120px;
+        }
+        .card span {
+            font-family: 'Rubik', sans-serif;
+        }
+        .card span::after {
+            content: '';
+            position: absolute;
+            bottom: 45%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            border-radius: 2px;
+            
+            background-color: rgb(32, 36, 34);
+        }
+        .card .button {
+            position: absolute;
+            bottom: 40px;
+            background-image: linear-gradient(90deg, yellow 0%, violet 60%, cyan 100%);
+            border: 2px black solid;
+            height: 48px;
+            border-radius: 24px;
+            width: clamp(50px, 60%, 300px);
+            cursor: pointer;
+            box-shadow: 1px 2px rgb(0, 0, 0) ,2px 3px black ;
+            transition: 0.1s;
+        }
+        .button:active {
+            transform: translate(2px, 3px);
+            box-shadow: none;
+        }
+        .card .button::before{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            content: 'Purchase';
+            font-family: 'Rubik', sans-serif;
+            position: absolute;
+            height: 100%;
+            width:100%;
+        }
+
+    </style>
+</html>
