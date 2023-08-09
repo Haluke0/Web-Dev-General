@@ -1,0 +1,159 @@
+<html>
+    <head>
+        <meta name="viewport" content="width = device-width, initial-scale = 1.0">
+    </head>
+
+    <body onload="initialize()">
+        <div class="card">
+            Jake
+        </div>
+        <div class="card">
+            Jaka
+        </div>
+        <div class="card">
+            Java
+        </div>
+        <div class="card">
+            Lava
+        </div>
+        <div class="card">
+            Llava
+        </div>
+        <div class="card">
+            Llama
+        </div>
+        <div class="card">
+            Llava
+        </div>
+        <div class="card">
+            Lava
+        </div>
+        <div class="card">
+            Java
+        </div>
+        <div class="card">
+            Jaka
+        </div>
+    </body>
+    <style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;500&display=swap');
+
+        :root {
+            --dark-color:#72705B;
+            --base-color:#A9D8B8;
+            --highlight-color:#BEFFC7;
+            --shadow-color:#9AA0A8;
+            --secondary-base:#A7C4B5;
+            color: var(--dark-color);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            background-color: var(--secondary-base);
+            position: relative;
+        }
+        .card{
+            display: none;
+            font-weight: 500;
+            font-family: "Rubik", sans-serif;
+            width: 620px;
+            height: 670px;
+            background: repeating-linear-gradient(-45deg, var(--base-color) 0px 20px, var(--highlight-color) 20px 40px);
+            border: 10px solid var(--dark-color);
+            border-radius: 30px;
+            position: absolute;
+            justify-content: right;
+            align-items: center;
+            font-size: 25px;
+            transition: 0.3s;
+            box-shadow: 3px 3px 10px 7px var(--dark-color);
+        }
+        .card.active{
+            display: flex;
+            z-index: 3;
+            justify-content: center;
+        }
+        .card.semi-active{
+            display: flex;
+            filter: blur(1px) saturate(10px);
+            transform: scale(0.92) translateX(-30%);
+            z-index: 2;
+            justify-content: left;
+        }
+        .card.semi-active.right{
+            display: flex;
+            filter: blur(1px) saturate(10px);
+            transform: scale(0.92) translateX(30%);
+            z-index: 2;
+            justify-content: right;
+        }
+        .card.barely-active{
+            display: flex;
+            filter: blur(2px) saturate(50px);
+            transform: scale(0.87) translateX(-55%);
+            z-index: 1;
+            justify-content: left;
+        }
+        .card.barely-active.right{
+            display: flex;
+            filter: blur(2px) saturate(50px);
+            transform: scale(0.87) translateX(55%);
+            z-index: 1;
+            justify-content: right;
+        }
+    </style>
+    <script>
+        //plan: 
+        //1 - get the array of cards
+        const cards = document.querySelectorAll(".card")
+        //2 - set an "index" that chooses which one is supposed to be on the center
+        var index = 0
+        //3 wrapping: if index > array.length, index = 0
+        //wrapping: semi active sort, barely active sort
+        function wrap(addition){
+            if (index + addition + 1 > cards.length){
+                return (index + addition - cards.length)
+            }else if (index + addition < 0) {
+                return (cards.length + (index + addition))
+            }else {
+                return (index + addition)
+            }
+        }
+        //4 - give class "active" to index, give for i|index-i| = 1 "semi-active" give for i |index - i| = 2 "barely-active"
+        function updateScreen(){
+            cards.forEach(card => {
+                card.classList.remove("active","semi-active","barely-active","right")
+            })
+            cards[wrap(-2)].classList.add("barely-active")
+            cards[wrap(-1)].classList.add("semi-active")
+            cards[index].classList.add("active")
+            cards[wrap(1)].classList.add("semi-active", "right")
+            cards[wrap(2)].classList.add("barely-active", "right")
+            
+            
+        }
+        function initialize(){
+            cards.forEach(card => {            
+                card.addEventListener("click", e => {
+                if (e.clientX >= innerWidth * 0.66){
+                    index = wrap(1)
+                }else if (e.clientX <= innerWidth * 0.34) {
+                    index = wrap(-1)
+                }
+                updateScreen()
+                })})
+            updateScreen()
+        }
+        //5 - add sliding onclick => if x > 50% clientWidth slide right else slide left
+
+    </script>
+</html>
